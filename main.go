@@ -37,11 +37,18 @@ func getTodos(w http.ResponseWriter, r *http.Request) {
 }
 
 func postTodo(w http.ResponseWriter, r *http.Request) {
+	//Deserializing
 	var newTodo Todo
 	json.NewDecoder(r.Body).Decode(&newTodo)
+
+	// Data processing
 	newTodo.Id = len(todos) + 1
 	newTodo.CreatedAt = time.Now()
+
+	// Append to database
 	todos = append(todos, newTodo)
+
+	// Responding with created resource
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	raw, _ := json.Marshal(newTodo)
