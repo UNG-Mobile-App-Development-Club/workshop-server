@@ -7,11 +7,13 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
+type Todo struct {
+}
+
 func main() {
+	router := chi.NewRouter()
 
-    router := chi.NewRouter()
+	router.Use(middleware.Logger)
 
-    router.Use(middleware.Logger)
-
-    http.ListenAndServe(":8080", router)
+	http.ListenAndServe(":8080", router)
 }
