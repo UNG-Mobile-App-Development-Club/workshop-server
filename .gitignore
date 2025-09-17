@@ -1,0 +1,36 @@
+# Binaries for Go applications
+*.exe
+*.dll
+*.so
+*.dylib
+*.rpm
+*.deb
+*.bin
+
+# Build artifacts
+bin/
+pkg/
+
+# Test results
+*.test
+
+# Editor/IDE specific files
+.idea/
+.vscode/
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Dependency management
+vendor/ # If not using Go Modules or if modules are vendored
+go.sum # If not using Go Modules (though usually committed with Go Modules)
+
+# Go workspace file
+go.work
+go.work.sum
+
+# Log files
+*.log
+
+# Environment variables
+.env
