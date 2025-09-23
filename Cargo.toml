@@ -3,7 +3,8 @@ name = "workshop-server"
 version = "0.1.0"
 edition = "2024"
 
-[[bin]]
-name = "workshop-server"
-
 [dependencies]
+axum = "0.8.4"
+axum-extra = { version = "0.10.1", features = ["erased-json"] }
+serde = { version = "1.0.225", features = ["derive"] }
+tokio = { version = "1.47.1", features = ["macros", "rt-multi-thread", "sync"] }
