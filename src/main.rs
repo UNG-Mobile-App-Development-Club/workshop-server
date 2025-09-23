@@ -1,4 +1,5 @@
-use axum::extract::State;
+use axum::extract::{Path, State};
+use axum::http::StatusCode;
 use axum::routing::{get, post};
 use axum::{Json, Router};
 use axum_extra::response::ErasedJson;
@@ -26,17 +27,27 @@ type TodoStore = Arc<RwLock<Todos>>;
 async fn main() {
     // In-memory todos list
     let todos = vec![
-        Todo { id: Some(1), content: "Learn Rust".to_string(), created_at: Some(SystemTime::now()) },
-        Todo { id: Some(2), content: "Build a web app".to_string(), created_at: Some(SystemTime::now()) },
+        Todo {
+            id: Some(0),
+            content: "Learn Rust".to_string(),
+            created_at: Some(SystemTime::now()),
+        },
+        Todo {
+            id: Some(1),
+            content: "Build a web app".to_string(),
+            created_at: Some(SystemTime::now()),
+        },
     ];
     // Define routes with HTTP function (get, post)
     let app = Router::new()
         .route("/todo", get(get_todos))
-        .route("/todo/{id}", post(post_todo))
+        .route("/todo/{id}", post(post_todo).get(get_todo))
         .with_state(Arc::new(RwLock::new(todos)));
 
     // Listen and Serve on 127.0.0.1:8080
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:8080").await.unwrap();
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:8080")
+        .await
+        .unwrap();
     axum::serve(listener, app).await.unwrap();
 }
 
@@ -54,4 +65,17 @@ async fn post_todo(State(todos): State<TodoStore>, Json(mut todo): Json<Todo>) -
     let response = ErasedJson::new(&todo);
     todos.push(todo);
     response
+}
+
+async fn get_todo(
+    Path(id): Path<usize>,
+    State(todos): State<TodoStore>,
+) -> Result<ErasedJson, StatusCode> {
+    // Path(id): Path<usize> automatically extracts the id from the URL path, returning BadRequest if it fails
+    todos
+        .read()
+        .await
+        .get(id)
+        .map(|todo| ErasedJson::new(todo))
+        .ok_or(StatusCode::NOT_FOUND)
 }
