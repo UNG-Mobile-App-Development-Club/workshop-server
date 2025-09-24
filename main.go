@@ -53,7 +53,7 @@ func postTodos(w http.ResponseWriter, r *http.Request) {
 	todos = append(todos, newTodo)
 
 	// Responding to client
-	w.Header().Set("Content-Type", "apllication/json")
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	raw, _ := json.Marshal(newTodo)
 	w.Write(raw)
