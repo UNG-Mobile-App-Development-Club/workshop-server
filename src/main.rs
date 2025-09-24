@@ -38,16 +38,24 @@ async fn main() {
             created_at: Some(SystemTime::now()),
         },
     ];
+
+    // Initialize tracing (logging)
+    tracing_subscriber::fmt()
+        .with_max_level(tracing::Level::DEBUG)
+        .init();
+
     // Define routes with HTTP function (get, post)
     let app = Router::new()
-        .route("/todo", get(get_todos))
-        .route("/todo/{id}", post(post_todo).get(get_todo))
+        .route("/todos", get(get_todos))
+        .route("/todos/{id}", post(post_todo).get(get_todo))
+        .layer(tower_http::trace::TraceLayer::new_for_http()) // Add tracing layer
         .with_state(Arc::new(RwLock::new(todos)));
 
     // Listen and Serve on 127.0.0.1:8080
     let listener = tokio::net::TcpListener::bind("127.0.0.1:8080")
         .await
         .unwrap();
+    tracing::info!("Server listening on 127.0.0.1:8080");
     axum::serve(listener, app).await.unwrap();
 }
 
