@@ -46,7 +46,7 @@ func postTodos(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&newTodo)
 
 	// Data processing
-	newTodo.Id = Len(todos) + 1
+	newTodo.Id = len(todos) + 1
 	newTodo.CreatedAt = time.Now()
 
 	// Append to database
