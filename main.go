@@ -31,6 +31,7 @@ func main() {
 	router.Get("/todos", getTodos)
     router.Post("/todos", postTodo)
 
+    println("Server is running on http://localhost:8080")
     http.ListenAndServe(":8080", router)
 }
 
